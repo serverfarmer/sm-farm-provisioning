@@ -73,3 +73,5 @@ export SF_GITHUB=`grep github.com /opt/farm/.git/config |rev |cut -d'/' -f2 |rev
 export SF_CONFIRM=serverfarmer-provisioning@`external_domain`
 " >$template
 chmod 0700 $template
+
+ln -sf /opt/farm/ext/farm-provisioning/provision.sh /usr/local/bin/sf-provision
