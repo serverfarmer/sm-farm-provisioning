@@ -1,5 +1,5 @@
 sf-farm-provisioning extension provides tools for quick and easy
-Server Farmer provisioning in the cloud.
+Server Farmer provisioning in the cloud, or on dedicated servers.
 
 Supported providers:
 
@@ -9,3 +9,4 @@ Supported providers:
 - Microsoft Azure
 - Rackspace Cloud
 - any cloud service based on OpenStack (including public, private and hybrid clouds)
+- any dedicated server provider (eg. Hetzner)

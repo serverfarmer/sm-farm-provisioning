@@ -2,7 +2,7 @@
 . /opt/farm/scripts/functions.net
 
 if [ "$3" = "" ]; then
-	echo "usage: $0 <hostname> <ssh-key-path> <profile>"
+	echo "usage: $0 <hostname[:port]> <ssh-key-path> <profile>"
 	exit 1
 elif [ "`resolve_host $1`" = "" ]; then
 	echo "error: parameter $1 not conforming hostname format, or given hostname is invalid"
@@ -19,31 +19,72 @@ elif [ "`cat /etc/local/.farm/*.hosts |grep \"^$1$\"`" != "" ]; then
 fi
 
 
-target=$1
+server=$1
 tmpkey=$2
 profile=$3
 
-if [[ $target == *"amazonaws.com" ]]; then
-	mode="ec2"
-elif [[ $target == *"bc.googleusercontent.com" ]]; then
-	mode="gce"
-elif [[ $target == *"cloudapp.azure.com" ]]; then
-	mode="azure"
-elif [[ $target == *"e24cloud.com" ]]; then
-	mode="e24"
+if [ -z "${server##*:*}" ]; then
+	host="${server%:*}"
+	port="${server##*:}"
 else
-	mode="generic"
+	host=$server
+	port=22
 fi
 
-/opt/farm/ext/farm-provisioning/utils/upload.sh $target $tmpkey $profile $mode
+
+login="root"
+is_ip=""
+is_gce=""
+
+if [[ $host == *"amazonaws.com" ]]; then
+	login="ubuntu"
+elif [[ $host == *"bc.googleusercontent.com" ]]; then
+	login="ubuntu"
+	is_gce="true"
+elif [[ $host =~ ^[0-9]+[.][0-9]+[.][0-9]+[.][0-9]+$ ]]; then
+	is_ip="true"
+fi
+
+
+ssh -i $tmpkey -p $port -o StrictHostKeyChecking=no -o PasswordAuthentication=no $login@$host uptime >/dev/null 2>/dev/null
+
+if [[ $? != 0 ]]; then
+	echo "error: host $host denied access"
+	exit 1
+fi
+
+log=/var/log/provisioning/$host.log
+echo "### BEGIN `date +'%Y-%m-%d %H:%M:%S'` ###" >>$log
+
+# initial key is set only for ubuntu user - set it up also for root
+if [ "$login" != "root" ]; then
+	ssh -i $tmpkey -p $port $login@$host "cat /home/$login/.ssh/authorized_keys |sudo tee /root/.ssh/authorized_keys >/dev/null" >>$log
+fi
+
+# copy setup scripts to provisioned host
+scp -i $tmpkey -p $port /etc/local/.provisioning/$profile/variables.sh /opt/farm/ext/farm-provisioning/resources/setup-server-farmer.sh root@$host:/root >>$log
+
+# fix Google-related double repository definitions
+if [ "$is_gce" != "" ]; then
+	ssh -i $tmpkey -p $port root@$host /bin/rm -f /etc/apt/sources.list.d/partner.list >>$log 2>>$log
+fi
+
+# install Server Farmer
+if [ "$is_ip" != "" ]; then
+	ssh -i $tmpkey -p $port root@$host /root/setup-server-farmer.sh - >>$log 2>>$log
+else
+	ssh -i $tmpkey -p $port root@$host /root/setup-server-farmer.sh $host >>$log 2>>$log
+fi
 
 if [ -x /opt/farm/ext/farm-manager/add-dedicated-key.sh ]; then
-	/opt/farm/ext/farm-manager/add-dedicated-key.sh $target root
-	/opt/farm/ext/farm-manager/add-dedicated-key.sh $target backup
+	/opt/farm/ext/farm-manager/add-dedicated-key.sh $server root >>$log 2>>$log
+	/opt/farm/ext/farm-manager/add-dedicated-key.sh $server backup >>$log 2>>$log
 
 	if [ -x /opt/farm/ext/backup-collector/add-backup-host.sh ]; then
-		/opt/farm/ext/backup-collector/add-backup-host.sh $target
+		/opt/farm/ext/backup-collector/add-backup-host.sh $server >>$log 2>>$log
 	fi
 
-	echo $target >>/etc/local/.farm/cloud.hosts
+	echo $server >>/etc/local/.farm/cloud.hosts
 fi
+
+echo "### END `date +'%Y-%m-%d %H:%M:%S'` ###" >>$log
