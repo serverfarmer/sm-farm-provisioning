@@ -62,7 +62,7 @@ if [ "$login" != "root" ]; then
 fi
 
 # copy setup scripts to provisioned host
-scp -i $tmpkey -p $port /etc/local/.provisioning/$profile/variables.sh /opt/farm/ext/farm-provisioning/resources/setup-server-farmer.sh root@$host:/root >>$log
+scp -i $tmpkey -P $port /etc/local/.provisioning/$profile/variables.sh /opt/farm/ext/farm-provisioning/resources/setup-server-farmer.sh root@$host:/root >>$log
 
 # fix Google-related double repository definitions
 if [ "$is_gce" != "" ]; then
@@ -75,6 +75,8 @@ if [ "$is_ip" != "" ]; then
 else
 	ssh -i $tmpkey -p $port root@$host /root/setup-server-farmer.sh $host >>$log 2>>$log
 fi
+
+ssh -i $tmpkey -p $port root@$host /bin/rm -f /root/variables.sh /root/setup-server-farmer.sh >>$log 2>>$log
 
 if [ -x /opt/farm/ext/farm-manager/add-dedicated-key.sh ]; then
 	/opt/farm/ext/farm-manager/add-dedicated-key.sh $server root >>$log 2>>$log
