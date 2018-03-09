@@ -61,6 +61,12 @@ if [ "$login" != "root" ]; then
 	ssh -i $tmpkey -p $port $login@$host "cat /home/$login/.ssh/authorized_keys |sudo tee /root/.ssh/authorized_keys >/dev/null" >>$log
 fi
 
+. /etc/local/.provisioning/$profile/variables.sh
+
+if [ "$FW_SSH_KEY" != "" ] && [ -f /etc/local/.ssh/$FW_SSH_KEY ]; then
+	scp -i $tmpkey -P $port /etc/local/.ssh/$FW_SSH_KEY root@$host:/root >>$log
+fi
+
 # copy setup scripts to provisioned host
 scp -i $tmpkey -P $port /etc/local/.provisioning/$profile/variables.sh /opt/farm/ext/farm-provisioning/resources/setup-server-farmer.sh root@$host:/root >>$log
 

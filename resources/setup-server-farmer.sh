@@ -51,6 +51,12 @@ mkdir -p   /etc/local/.config /etc/local/.ssh
 chmod 0700 /etc/local/.config /etc/local/.ssh
 chmod 0711 /etc/local
 
+if [ "$FW_REPOSITORY" != "" ] && [ "$FW_SSH_KEY" != "" ] && [ -f /root/$FW_SSH_KEY ]; then
+	mv -f /root/$FW_SSH_KEY /etc/local/.ssh/id_github_firewall
+	chmod 0600 /etc/local/.ssh/id_github_firewall
+	GIT_SSH=/opt/farm/scripts/git/helper.sh GIT_KEY=/etc/local/.ssh/id_github_firewall git clone "$FW_REPOSITORY" /opt/farm/ext/firewall
+fi
+
 /opt/farm/scripts/setup/groups.sh
 /opt/farm/setup.sh
 

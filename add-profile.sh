@@ -30,6 +30,9 @@ SMTP_RELAY="`input \"enter default smtp relay hostname for provisioning\" smtp.g
 SMTP_USERNAME="`input \"[$SMTP_RELAY] enter login\" my-user@gmail.com`"
 SMTP_PASSWORD="`input \"[$SMTP_RELAY] enter password for $SMTP_USERNAME\" my-password`"
 
+FW_REPOSITORY="`input \"enter firewall repository url\" git@github.com:your/firewall-fork.git`"
+FW_SSH_KEY="`input \"[$FW_REPOSITORY] enter ssh key name\" id_github_firewall`"
+
 
 mkdir -p /etc/local/.provisioning/$1
 echo "#!/bin/sh
@@ -46,6 +49,11 @@ export SNMP_COMMUNITY=$SNMP_COMMUNITY
 export SMTP_RELAY=$SMTP_RELAY
 export SMTP_USERNAME=$SMTP_USERNAME
 export SMTP_PASSWORD=$SMTP_PASSWORD
+#
+# firewall - optional private repository:
+#
+export FW_REPOSITORY=$FW_REPOSITORY
+export FW_SSH_KEY=$FW_SSH_KEY
 #
 # Github username (or organization short name), where you have forked
 # Server Farmer main repository.
