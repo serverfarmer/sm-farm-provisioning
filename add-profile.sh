@@ -10,6 +10,7 @@ fi
 
 newrelic="/etc/local/.config/newrelic.license"
 template="/etc/local/.provisioning/$1/variables.sh"
+fwconfig="/opt/farm/ext/firewall/.git/config"
 
 if [ -f $template ]; then
 	echo "provisioning configuration template \"$1\" already found, exiting"
@@ -23,6 +24,12 @@ else
 	license="put-your-newrelic-license-key-here"
 fi
 
+if [ -f $fwconfig ] && grep -q git@ $fwconfig; then
+	giturl=`grep git@ $fwconfig |awk "{ print \\$3 }"`
+else
+	giturl="git@github.com:your/firewall.git"
+fi
+
 NEWRELIC_LICENSE="`input \"enter newrelic.com license key for provisioning\" $license`"
 SNMP_COMMUNITY="`input \"enter snmp v2 community for provisioning\" put-your-snmp-community-here`"
 
@@ -30,7 +37,7 @@ SMTP_RELAY="`input \"enter default smtp relay hostname for provisioning\" smtp.g
 SMTP_USERNAME="`input \"[$SMTP_RELAY] enter login\" my-user@gmail.com`"
 SMTP_PASSWORD="`input \"[$SMTP_RELAY] enter password for $SMTP_USERNAME\" my-password`"
 
-FW_REPOSITORY="`input \"enter firewall repository url\" git@github.com:your/firewall-fork.git`"
+FW_REPOSITORY="`input \"enter firewall repository url\" $giturl`"
 FW_SSH_KEY="`input \"[$FW_REPOSITORY] enter ssh key name\" id_github_firewall`"
 
 
