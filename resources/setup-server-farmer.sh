@@ -21,13 +21,15 @@ git clone https://github.com/$SF_GITHUB/serverfarmer /opt/farm
 
 git clone "`extension_repositories`/sf-system" /opt/farm/ext/system
 git clone "`extension_repositories`/sf-repos" /opt/farm/ext/repos
+git clone "`extension_repositories`/sf-packages" /opt/farm/ext/packages
+git clone "`extension_repositories`/sf-farm-roles" /opt/farm/ext/farm-roles
 
 HOST=$1
 OSVER=`/opt/farm/ext/system/detect-system-version.sh`
 OSTYPE=`/opt/farm/ext/system/detect-system-version.sh -type`
 HWTYPE=`/opt/farm/ext/system/detect-hardware-type.sh`
 
-if [ ! -d /opt/farm/ext/repos/lists/$OSVER ] && [ ! -h /opt/farm/ext/repos/lists/$OSVER ]; then
+if [ ! -d /opt/farm/ext/farm-roles/lists/$OSVER ] && [ ! -h /opt/farm/ext/farm-roles/lists/$OSVER ]; then
 	echo "error: something is wrong with operating system version, aborting install"
 	exit 1
 fi
