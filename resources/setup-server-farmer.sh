@@ -17,12 +17,12 @@ fi
 git clone https://github.com/$SF_GITHUB/serverfarmer /opt/farm
 
 . /opt/farm/scripts/functions.custom
-. /opt/farm/scripts/functions.net
 
 git clone "`extension_repositories`/sf-system" /opt/farm/ext/system
 git clone "`extension_repositories`/sf-repos" /opt/farm/ext/repos
 git clone "`extension_repositories`/sf-packages" /opt/farm/ext/packages
 git clone "`extension_repositories`/sf-farm-roles" /opt/farm/ext/farm-roles
+git clone "`extension_repositories`/sf-net-utils" /opt/farm/ext/net-utils
 
 HOST=$1
 OSVER=`/opt/farm/ext/system/detect-system-version.sh`
@@ -33,6 +33,8 @@ if [ ! -d /opt/farm/ext/farm-roles/lists/$OSVER ] && [ ! -h /opt/farm/ext/farm-r
 	echo "error: something is wrong with operating system version, aborting install"
 	exit 1
 fi
+
+. /opt/farm/ext/net-utils/functions
 
 if [ "`resolve_host $HOST`" = "" ]; then
 	HOST=`hostname`

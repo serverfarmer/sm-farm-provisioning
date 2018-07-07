@@ -1,5 +1,5 @@
 #!/bin/bash
-. /opt/farm/scripts/functions.net
+. /opt/farm/ext/net-utils/functions
 
 if [ "$3" = "" ]; then
 	echo "usage: $0 <hostname[:port]> <ssh-key-path> <profile>"
