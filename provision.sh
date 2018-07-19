@@ -13,7 +13,7 @@ elif [ ! -f $2 ]; then
 elif [ ! -d /etc/local/.provisioning/$3 ]; then
 	echo "error: profile directory not found"
 	exit 1
-elif [ "`cat /etc/local/.farm/*.hosts |grep \"^$1$\"`" != "" ]; then
+elif grep -q "^$1:" /etc/local/.farm/*.hosts || grep -q "^$1$" /etc/local/.farm/*.hosts; then
 	echo "error: host $1 already added"
 	exit 1
 fi
