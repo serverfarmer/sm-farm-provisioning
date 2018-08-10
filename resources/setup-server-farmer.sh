@@ -23,6 +23,7 @@ git clone "`extension_repositories`/sf-repos" /opt/farm/ext/repos
 git clone "`extension_repositories`/sf-packages" /opt/farm/ext/packages
 git clone "`extension_repositories`/sf-farm-roles" /opt/farm/ext/farm-roles
 git clone "`extension_repositories`/sf-net-utils" /opt/farm/ext/net-utils
+git clone "`extension_repositories`/sf-passwd-utils" /opt/farm/ext/passwd-utils
 
 HOST=$1
 OSVER=`/opt/farm/ext/system/detect-system-version.sh`
@@ -61,7 +62,7 @@ if [ "$FW_REPOSITORY" != "" ] && [ "$FW_SSH_KEY" != "" ] && [ -f /root/$FW_SSH_K
 	GIT_SSH=/opt/farm/scripts/git/helper.sh GIT_KEY=/etc/local/.ssh/id_github_firewall git clone "$FW_REPOSITORY" /opt/farm/ext/firewall
 fi
 
-/opt/farm/scripts/setup/groups.sh
+/opt/farm/ext/passwd-utils/create-group.sh newrelic 130  # common group for monitoring extensions
 /opt/farm/setup.sh
 
 /sbin/ifconfig -a |mail -s "Cloud instance $HOST setup finished" $SF_CONFIRM
