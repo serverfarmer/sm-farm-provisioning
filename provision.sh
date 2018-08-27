@@ -41,6 +41,8 @@ if [[ $host == *"amazonaws.com" ]]; then
 elif [[ $host == *"bc.googleusercontent.com" ]]; then
 	login="ubuntu"
 	is_gce="true"
+elif [[ $host == *"e24cloud.com" ]]; then
+	login="e24"
 elif [[ $host =~ ^[0-9]+[.][0-9]+[.][0-9]+[.][0-9]+$ ]]; then
 	is_ip="true"
 fi
