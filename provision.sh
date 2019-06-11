@@ -33,7 +33,6 @@ fi
 
 
 login="root"
-is_ip=""
 is_gce=""
 
 if [[ $host == *"amazonaws.com" ]]; then
@@ -43,8 +42,6 @@ elif [[ $host == *"bc.googleusercontent.com" ]]; then
 	is_gce="true"
 elif [[ $host == *"e24cloud.com" ]]; then
 	login="e24"
-elif [[ $host =~ ^[0-9]+[.][0-9]+[.][0-9]+[.][0-9]+$ ]]; then
-	is_ip="true"
 fi
 
 
@@ -78,12 +75,7 @@ if [ "$is_gce" != "" ]; then
 fi
 
 # install Server Farmer
-if [ "$is_ip" != "" ]; then
-	ssh -i $tmpkey -p $port root@$host /root/setup-server-farmer.sh - >>$log 2>>$log
-else
-	ssh -i $tmpkey -p $port root@$host /root/setup-server-farmer.sh $host >>$log 2>>$log
-fi
-
+ssh -i $tmpkey -p $port root@$host /root/setup-server-farmer.sh $host >>$log 2>>$log
 ssh -i $tmpkey -p $port root@$host /bin/rm -f /root/variables.sh /root/setup-server-farmer.sh >>$log 2>>$log
 
 if [ -x /opt/farm/ext/farm-manager/add-dedicated-key.sh ]; then

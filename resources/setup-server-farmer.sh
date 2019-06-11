@@ -37,12 +37,9 @@ fi
 
 . /opt/farm/ext/net-utils/functions
 
-if [ "`resolve_host $HOST`" = "" ]; then
+if [[ $HOST =~ ^[0-9]+[.][0-9]+[.][0-9]+[.][0-9]+$ ]] || [ "`resolve_host $HOST`" = "" ]; then
 	HOST=`hostname`
-	echo "warning: given hostname $1 has invalid format, continuing with the current server hostname $HOST"
-else
-	cp -a /etc/hostname /etc/hostname.orig
-	/opt/farm/ext/system/set-hostname.sh $HOST
+	echo "warning: given hostname $1 is invalid, continuing with the current server hostname $HOST"
 fi
 
 echo "HOST=$HOST" >/etc/farmconfig
