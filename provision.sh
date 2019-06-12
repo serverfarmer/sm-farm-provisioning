@@ -2,10 +2,7 @@
 . /opt/farm/ext/net-utils/functions
 
 if [ "$3" = "" ]; then
-	echo "usage: $0 <hostname[:port]> <ssh-key-path> <profile>"
-	exit 1
-elif [ "`resolve_host $1`" = "" ]; then
-	echo "error: parameter $1 not conforming hostname format, or given hostname is invalid"
+	echo "usage: $0 <[user@]hostname[:port]> <ssh-key-path> <profile>"
 	exit 1
 elif [ ! -f $2 ]; then
 	echo "error: key not found"
@@ -13,37 +10,45 @@ elif [ ! -f $2 ]; then
 elif [ ! -d /etc/local/.provisioning/$3 ]; then
 	echo "error: profile directory not found"
 	exit 1
-elif grep -q "^$1:" /etc/local/.farm/*.hosts || grep -q "^$1$" /etc/local/.farm/*.hosts; then
-	echo "error: host $1 already added"
-	exit 1
 fi
-
 
 server=$1
 tmpkey=$2
 profile=$3
 
-if [ -z "${server##*:*}" ]; then
-	host="${server%:*}"
-	port="${server##*:}"
-else
-	host=$server
-	port=22
+tmp=$server
+login=""
+port=22
+
+if [ -z "${tmp##*@*}" ]; then
+	login="${tmp%@*}"
+	tmp="${tmp##*@}"
 fi
 
-
-login="root"
-is_gce=""
-
-if [[ $host == *"amazonaws.com" ]]; then
-	login="ubuntu"
-elif [[ $host == *"bc.googleusercontent.com" ]]; then
-	login="ubuntu"
-	is_gce="true"
-elif [[ $host == *"e24cloud.com" ]]; then
-	login="e24"
+if [ -z "${tmp##*:*}" ]; then
+	port="${tmp##*:}"
+	tmp="${tmp%:*}"
 fi
 
+host=$tmp
+
+if [ "`resolve_host $host`" = "" ]; then
+	echo "error: parameter $host not conforming hostname format, or given hostname is invalid"
+	exit 1
+elif grep -q "^$host:" /etc/local/.farm/*.hosts || grep -q "^$host$" /etc/local/.farm/*.hosts; then
+	echo "error: host $host already added"
+	exit 1
+fi
+
+if [ -z "$login" ]; then
+	if [[ $host == *"amazonaws.com" ]] || [[ $host == *"bc.googleusercontent.com" ]]; then
+		login="ubuntu"
+	elif [[ $host == *"e24cloud.com" ]]; then
+		login="e24"
+	else
+		login="root"
+	fi
+fi
 
 ssh -i $tmpkey -p $port -o StrictHostKeyChecking=no -o PasswordAuthentication=no $login@$host uptime >/dev/null 2>/dev/null
 
@@ -70,7 +75,7 @@ fi
 scp -i $tmpkey -P $port /etc/local/.provisioning/$profile/variables.sh /opt/farm/ext/farm-provisioning/resources/setup-server-farmer.sh root@$host:/root >>$log
 
 # fix Google-related double repository definitions
-if [ "$is_gce" != "" ]; then
+if [[ $host == *"bc.googleusercontent.com" ]]; then
 	ssh -i $tmpkey -p $port root@$host /bin/rm -f /etc/apt/sources.list.d/partner.list >>$log 2>>$log
 fi
 
