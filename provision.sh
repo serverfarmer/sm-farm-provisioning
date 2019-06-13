@@ -31,6 +31,7 @@ if [ -z "${tmp##*:*}" ]; then
 fi
 
 host=$tmp
+server=$host:$port
 
 if [ "`resolve_host $host`" = "" ]; then
 	echo "error: parameter $host not conforming hostname format, or given hostname is invalid"
