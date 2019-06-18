@@ -8,7 +8,9 @@ export LC_ALL=C
 
 if [ "`which apt-get`" != "" ]; then
 	apt-get update
-	apt-get upgrade -y
+	if [ ! -s /etc/local/.config/upgrade.disable ]; then
+		apt-get upgrade -y
+	fi
 	apt-get install -y git
 elif [ "`which yum`" != "" ]; then
 	yum install git
