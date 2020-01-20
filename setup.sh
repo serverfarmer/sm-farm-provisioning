@@ -1,7 +1,4 @@
 #!/bin/sh
-. /opt/farm/scripts/functions.custom
-. /opt/farm/scripts/functions.dialog
-
 
 /opt/farm/scripts/setup/extension.sh sf-net-utils
 
