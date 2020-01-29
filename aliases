@@ -1,0 +1,3 @@
+add-profile.sh:add-provisioning-profile
+authorize-key.sh:sf-authorize-key
+provision.sh:sf-provision
