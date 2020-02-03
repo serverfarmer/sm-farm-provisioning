@@ -18,14 +18,13 @@ fi
 
 git clone https://github.com/$SF_GITHUB/serverfarmer /opt/farm
 
-. /opt/farm/scripts/functions.custom
-
-git clone "`extension_repositories`/sf-system" /opt/farm/ext/system
-git clone "`extension_repositories`/sf-repos" /opt/farm/ext/repos
-git clone "`extension_repositories`/sf-packages" /opt/farm/ext/packages
-git clone "`extension_repositories`/sf-farm-roles" /opt/farm/ext/farm-roles
-git clone "`extension_repositories`/sf-net-utils" /opt/farm/ext/net-utils
-git clone "`extension_repositories`/sf-passwd-utils" /opt/farm/ext/passwd-utils
+base=`/opt/farm/config/get-url-extension-repositories.sh`
+git clone "$base/sf-system" /opt/farm/ext/system
+git clone "$base/sf-repos" /opt/farm/ext/repos
+git clone "$base/sf-packages" /opt/farm/ext/packages
+git clone "$base/sf-farm-roles" /opt/farm/ext/farm-roles
+git clone "$base/sf-net-utils" /opt/farm/ext/net-utils
+git clone "$base/sf-passwd-utils" /opt/farm/ext/passwd-utils
 
 HOST=$1
 OSVER=`/opt/farm/ext/system/detect-system-version.sh`

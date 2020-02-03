@@ -1,5 +1,4 @@
 #!/bin/sh
-. /opt/farm/scripts/functions.custom
 . /opt/farm/scripts/functions.dialog
 
 
@@ -11,6 +10,7 @@ fi
 newrelic="/etc/local/.config/newrelic.license"
 template="/etc/local/.provisioning/$1/variables.sh"
 fwconfig="/opt/farm/ext/firewall/.git/config"
+domain=`/opt/farm/config/get-external-domain.sh`
 
 if [ -f $template ]; then
 	echo "provisioning configuration template \"$1\" already found, exiting"
@@ -69,6 +69,6 @@ export SF_GITHUB=`grep github.com /opt/farm/.git/config |rev |cut -d'/' -f2 |rev
 #
 # Email address for confirmations about successful setups.
 #
-export SF_CONFIRM=serverfarmer-provisioning@`external_domain`
+export SF_CONFIRM=serverfarmer-provisioning@$domain
 " >$template
 chmod 0600 $template
