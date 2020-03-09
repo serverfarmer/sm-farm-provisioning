@@ -84,9 +84,9 @@ fi
 ssh -i $tmpkey -p $port root@$host /root/setup-server-farmer.sh $host >>$log 2>>$log
 ssh -i $tmpkey -p $port root@$host /bin/rm -f /root/variables.sh /root/setup-server-farmer.sh >>$log 2>>$log
 
-if [ -x /opt/farm/ext/farm-manager/add-dedicated-key.sh ]; then
-	/opt/farm/ext/farm-manager/add-dedicated-key.sh $server root >>$log 2>>$log
-	/opt/farm/ext/farm-manager/add-dedicated-key.sh $server backup >>$log 2>>$log
+if [ -x /opt/farm/mgr/farm-register/add-dedicated-key.sh ]; then
+	/opt/farm/mgr/farm-register/add-dedicated-key.sh $server root >>$log 2>>$log
+	/opt/farm/mgr/farm-register/add-dedicated-key.sh $server backup >>$log 2>>$log
 
 	if [ -x /opt/farm/ext/backup-collector/add-backup-host.sh ]; then
 		/opt/farm/ext/backup-collector/add-backup-host.sh $server >>$log 2>>$log
