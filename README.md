@@ -1,5 +1,4 @@
-sf-farm-provisioning extension provides tools for quick and easy
-Server Farmer provisioning in the cloud, or on dedicated servers.
+`sm-farm-provisioning` management extension provides tools for quick and easy Server Farmer provisioning in the cloud, or on dedicated servers.
 
 Supported providers:
 

@@ -73,7 +73,7 @@ if [ "$FW_SSH_KEY" != "" ] && [ -f /etc/local/.ssh/$FW_SSH_KEY ]; then
 fi
 
 # copy setup scripts to provisioned host
-scp -i $tmpkey -P $port /etc/local/.provisioning/$profile/variables.sh /opt/farm/ext/farm-provisioning/resources/setup-server-farmer.sh root@$host:/root >>$log
+scp -i $tmpkey -P $port /etc/local/.provisioning/$profile/variables.sh /opt/farm/mgr/farm-provisioning/resources/setup-server-farmer.sh root@$host:/root >>$log
 
 # fix Google-related double repository definitions
 if [[ $host == *"bc.googleusercontent.com" ]]; then
@@ -88,8 +88,8 @@ if [ -x /opt/farm/mgr/farm-register/add-dedicated-key.sh ]; then
 	/opt/farm/mgr/farm-register/add-dedicated-key.sh $server root >>$log 2>>$log
 	/opt/farm/mgr/farm-register/add-dedicated-key.sh $server backup >>$log 2>>$log
 
-	if [ -x /opt/farm/ext/backup-collector/add-backup-host.sh ]; then
-		/opt/farm/ext/backup-collector/add-backup-host.sh $server >>$log 2>>$log
+	if [ -x /opt/farm/mgr/backup-collector/add-backup-host.sh ]; then
+		/opt/farm/mgr/backup-collector/add-backup-host.sh $server >>$log 2>>$log
 	fi
 
 	echo $server >>/etc/local/.farm/cloud.hosts

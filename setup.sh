@@ -5,4 +5,4 @@
 mkdir -p   /var/log/provisioning /etc/local/.provisioning
 chmod 0700 /var/log/provisioning /etc/local/.provisioning
 
-/opt/farm/ext/farm-provisioning/add-profile.sh default
+/opt/farm/mgr/farm-provisioning/add-profile.sh default
