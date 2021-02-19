@@ -50,8 +50,8 @@ echo "HWTYPE=$HWTYPE" >>/etc/farmconfig
 echo "SMTP=true" >>/etc/farmconfig
 echo "SYSLOG=true" >>/etc/farmconfig
 
-mkdir -p   /etc/local/.config /etc/local/.ssh
-chmod 0700 /etc/local/.config /etc/local/.ssh
+mkdir -p   /etc/local/.config
+chmod 0700 /etc/local/.config
 chmod 0711 /etc/local
 
 if [ "$FW_REPOSITORY" != "" ] && [ "$FW_SSH_KEY" != "" ]; then
