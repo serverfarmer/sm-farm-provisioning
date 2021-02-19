@@ -36,7 +36,7 @@ server=$host:$port
 if [ "`resolve_host $host`" = "" ]; then
 	echo "error: parameter $host not conforming hostname format, or given hostname is invalid"
 	exit 1
-elif grep -q "^$host:" /etc/local/.farm/*.hosts || grep -q "^$host$" /etc/local/.farm/*.hosts; then
+elif grep -q "^$host:" ~/.farm/*.hosts || grep -q "^$host$" ~/.farm/*.hosts; then
 	echo "error: host $host already added"
 	exit 1
 fi
@@ -92,7 +92,7 @@ if [ -x /opt/farm/mgr/farm-register/add-dedicated-key.sh ]; then
 		/opt/farm/mgr/backup-collector/add-backup-host.sh $server >>$log 2>>$log
 	fi
 
-	echo $server >>/etc/local/.farm/cloud.hosts
+	echo $server >>~/.farm/cloud.hosts
 fi
 
 echo "### END `date +'%Y-%m-%d %H:%M:%S'` ###" >>$log
