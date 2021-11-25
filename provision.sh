@@ -68,8 +68,8 @@ fi
 
 . /etc/local/.provisioning/$profile/variables.sh
 
-if [ "$FW_SSH_KEY" != "" ] && [ -f ~/.ssh/$FW_SSH_KEY ]; then
-	scp -i $tmpkey -P $port ~/.ssh/$FW_SSH_KEY root@$host:/root/.ssh/id_github_firewall >>$log
+if [ "$FW_SSH_KEY" != "" ] && [ -f ~/.serverfarmer/ssh/$FW_SSH_KEY ]; then
+	scp -i $tmpkey -P $port ~/.serverfarmer/ssh/$FW_SSH_KEY root@$host:/root/.ssh/id_github_firewall >>$log
 fi
 
 # copy setup scripts to provisioned host
