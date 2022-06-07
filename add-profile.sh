@@ -7,7 +7,6 @@ if [ "$1" = "" ]; then
 	exit 1
 fi
 
-newrelic="/etc/local/.config/newrelic.license"
 template="/etc/local/.provisioning/$1/variables.sh"
 fwconfig="/opt/farm/ext/firewall/.git/config"
 domain=`/opt/farm/config/get-external-domain.sh`
@@ -18,19 +17,12 @@ if [ -f $template ]; then
 fi
 
 
-if [ -s $newrelic ]; then
-	license="`cat $newrelic`"
-else
-	license="put-your-newrelic-license-key-here"
-fi
-
 if [ -f $fwconfig ] && grep -q git@ $fwconfig; then
 	giturl=`grep git@ $fwconfig |awk "{ print \\$3 }"`
 else
 	giturl="git@github.com:your/firewall.git"
 fi
 
-NEWRELIC_LICENSE="`input \"enter newrelic.com license key for provisioning\" $license`"
 SNMP_COMMUNITY="`input \"enter snmp v2 community for provisioning\" put-your-snmp-community-here`"
 
 SMTP_RELAY="`input \"enter default smtp relay hostname for provisioning\" smtp.gmail.com`"
@@ -48,7 +40,6 @@ echo "#!/bin/sh
 #
 # extensions part:
 #
-export NEWRELIC_LICENSE=$NEWRELIC_LICENSE
 export SNMP_COMMUNITY=$SNMP_COMMUNITY
 #
 # core SF part:
