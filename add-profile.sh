@@ -7,7 +7,7 @@ if [ "$1" = "" ]; then
 	exit 1
 fi
 
-template="/etc/local/.provisioning/$1/variables.sh"
+template=~/.serverfarmer/provisioning/$1/variables.sh
 fwconfig="/opt/farm/ext/firewall/.git/config"
 domain=`/opt/farm/config/get-external-domain.sh`
 
@@ -33,7 +33,7 @@ FW_REPOSITORY="`input \"enter firewall repository url\" $giturl`"
 FW_SSH_KEY="`input \"[$FW_REPOSITORY] enter ssh key name\" id_github_firewall`"
 
 
-mkdir -p /etc/local/.provisioning/$1
+mkdir -p ~/.serverfarmer/provisioning/$1
 echo "#!/bin/sh
 #
 # Settings to use in unattended setup mode; please fill in all variables.

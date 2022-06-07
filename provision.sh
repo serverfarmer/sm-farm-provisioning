@@ -7,7 +7,7 @@ if [ "$3" = "" ]; then
 elif [ ! -f $2 ]; then
 	echo "error: key not found"
 	exit 1
-elif [ ! -d /etc/local/.provisioning/$3 ]; then
+elif [ ! -d ~/.serverfarmer/provisioning/$3 ]; then
 	echo "error: profile directory not found"
 	exit 1
 fi
@@ -58,7 +58,7 @@ if [[ $? != 0 ]]; then
 	exit 1
 fi
 
-log=/var/log/provisioning/$host.log
+log=~/.serverfarmer/provisioning-logs/$host.log
 echo "### BEGIN `date +'%Y-%m-%d %H:%M:%S'` ###" >>$log
 
 # initial key is set only for ubuntu user - set it up also for root
@@ -66,14 +66,14 @@ if [ "$login" != "root" ]; then
 	ssh -i $tmpkey -p $port $login@$host "cat /home/$login/.ssh/authorized_keys |sudo tee /root/.ssh/authorized_keys >/dev/null" >>$log
 fi
 
-. /etc/local/.provisioning/$profile/variables.sh
+. ~/.serverfarmer/provisioning/$profile/variables.sh
 
 if [ "$FW_SSH_KEY" != "" ] && [ -f ~/.serverfarmer/ssh/$FW_SSH_KEY ]; then
 	scp -i $tmpkey -P $port ~/.serverfarmer/ssh/$FW_SSH_KEY root@$host:/root/.ssh/id_github_firewall >>$log
 fi
 
 # copy setup scripts to provisioned host
-scp -i $tmpkey -P $port /etc/local/.provisioning/$profile/variables.sh /opt/farm/mgr/farm-provisioning/resources/setup-server-farmer.sh root@$host:/root >>$log
+scp -i $tmpkey -P $port ~/.serverfarmer/provisioning/$profile/variables.sh /opt/farm/mgr/farm-provisioning/resources/setup-server-farmer.sh root@$host:/root >>$log
 
 # fix Google-related double repository definitions
 if [[ $host == *"bc.googleusercontent.com" ]]; then
